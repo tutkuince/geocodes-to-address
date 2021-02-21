@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Address -> Geocodes</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
+          integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col mt-3">
+            <div action="/">
+                <div class="form-group">
+                    <label for="latlng">Enter a query to geocode.</label>
+                    <input type="text" value="0,0" class="form-control" id="latlng">
+                    <small id="latlngHelp" class="form-text text-muted">Sample value: 38.338709,27.319836</small>
+                </div>
+                <input type="button" id="submit" class="btn btn-primary" value="Reverse Geocode"/>
+            </div>
+        </div>
+    </div>
+    <hr>
+    <div class="row">
+        <div class="col">
+            <ul id="result" class="list-group">
+
+            </ul>
+        </div>
+    </div>
+</div>
+<script>
+    document.getElementById("submit").addEventListener("click", () => {
+        let latlng = document.getElementById("latlng").value;
+        if (latlng === "") {
+            alert("Please enter a query to geocode");
+            return;
+        }
+        let index = latlng.indexOf(",");
+        if (index === -1) {
+            alert("Invalid request. Do not forget to use ','. Check out the sample value for correct format.");
+            return;
+        }
+        let latlngArray = latlng.split(",");
+        let lat = latlngArray[0];
+        let lng = latlngArray[1];
+        let url = `http://localhost:8080/api/v0/geocodes/getGeocode?lat=${lat}&lng=${lng}`;
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                if (data.results.length > 0) {
+                    data.results.forEach(result => {
+                        document.getElementById("result").innerHTML += `
+                        <li class="list-group-item text-left">
+                            <i class="fas fa-map-marker-alt"></i>
+                            ${result.formattedAddress}
+                            <br/>
+                            Location: ${result.geometry.location.lat}, ${result.geometry.location.lng}
+                            <br/>
+                            Types: [${result.types}]
+                        </li>
+                    `;
+                    });
+                }
+            })
+    });
+</script>
+</body>
+
+</html>
