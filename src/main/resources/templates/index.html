@@ -34,6 +34,7 @@
 <script>
     document.getElementById("submit").addEventListener("click", () => {
         let latlng = document.getElementById("latlng").value;
+        document.getElementById("result").innerHTML = "";
         if (latlng === "") {
             alert("Please enter a query to geocode");
             return;
