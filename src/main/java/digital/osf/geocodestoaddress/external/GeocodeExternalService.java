@@ -8,4 +8,6 @@ import java.io.IOException;
 public interface GeocodeExternalService {
 
     GeocodeResultDto getReverseGeocode(String latitudeAndLongitude) throws InterruptedException, ApiException, IOException;
+
+    GeocodeResultDto getGeocode(String address) throws InterruptedException, ApiException, IOException;
 }

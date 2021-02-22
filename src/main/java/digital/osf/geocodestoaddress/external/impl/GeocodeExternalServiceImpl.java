@@ -46,4 +46,16 @@ public class GeocodeExternalServiceImpl implements GeocodeExternalService {
 
         return geocodeResultDto;
     }
+
+    @Override
+    public GeocodeResultDto getGeocode(String address) throws InterruptedException, ApiException, IOException {
+        final GeocodingResult[] await = GeocodingApi.newRequest(geoApiContext).address(address).await();
+
+        List<GeocodingResult> geocodingResults = List.of(await);
+
+        GeocodeResultDto geocodeResultDto = new GeocodeResultDto();
+        geocodeResultDto.setResults(modelMapper.map(geocodingResults, List.class));
+
+        return geocodeResultDto;
+    }
 }

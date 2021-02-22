@@ -12,29 +12,47 @@
 <div class="container">
     <div class="row">
         <div class="col mt-3">
-            <div action="/">
-                <div class="form-group">
-                    <label for="latlng">Enter a query to geocode.</label>
-                    <input type="text" value="0,0" class="form-control" id="latlng">
-                    <small id="latlngHelp" class="form-text text-muted">Sample value: 38.338709,27.319836</small>
-                </div>
-                <input type="button" id="submit" class="btn btn-primary" value="Reverse Geocode"/>
+            <h4 class="text-center">Reverse Geocode</h4>
+            <div class="form-group">
+                <label for="latlng">Takes latitude and longitude, returns an address</label>
+                <input type="text" value="0,0" class="form-control" id="latlng">
+                <small id="latlngHelp" class="form-text text-muted">Sample value: 38.338709,27.319836</small>
             </div>
+            <input type="button" id="submitReverseGeocode" class="btn btn-primary" value="Reverse Geocode"/>
         </div>
     </div>
-    <hr>
     <div class="row">
         <div class="col">
-            <ul id="result" class="list-group">
+            <ul id="resultReverseGeocode" class="list-group">
+
+            </ul>
+        </div>
+    </div>
+
+    <hr>
+    <div class="row">
+        <div class="col mt-3">
+            <h4 class="text-center">Geocoding</h4>
+            <div class="form-group">
+                <label for="address">Takes a human-readable address, returns location data</label>
+                <input type="text" class="form-control" id="address" placeholder="Address">
+                <small id="addressHelp" class="form-text text-muted">Sample value: Izmir</small>
+            </div>
+            <input type="button" id="submitGeocode" class="btn btn-primary" value="Geocode"/>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <ul id="resultGeocode" class="list-group">
 
             </ul>
         </div>
     </div>
 </div>
 <script>
-    document.getElementById("submit").addEventListener("click", () => {
+    document.getElementById("submitReverseGeocode").addEventListener("click", () => {
         let latlng = document.getElementById("latlng").value;
-        document.getElementById("result").innerHTML = "";
+        document.getElementById("resultReverseGeocode").innerHTML = "";
         if (latlng === "") {
             alert("Please enter a query to geocode");
             return;
@@ -47,14 +65,14 @@
         let latlngArray = latlng.split(",");
         let lat = latlngArray[0];
         let lng = latlngArray[1];
-        let url = `http://localhost:8080/api/v0/geocodes/getGeocode?lat=${lat}&lng=${lng}`;
-        fetch(url)
+        let urlReverseGeocode = `http://localhost:8080/api/v0/geocodes/getReverseGeocode?lat=${lat}&lng=${lng}`;
+        fetch(urlReverseGeocode)
             .then(response => response.json())
             .then(data => {
                 console.log(data);
                 if (data.results.length > 0) {
                     data.results.forEach(result => {
-                        document.getElementById("result").innerHTML += `
+                        document.getElementById("resultReverseGeocode").innerHTML += `
                         <li class="list-group-item text-left">
                             <i class="fas fa-map-marker-alt"></i>
                             ${result.formattedAddress}
@@ -65,8 +83,41 @@
                         </li>
                     `;
                     });
+                } else {
+                    document.getElementById("resultReverseGeocode").innerHTML += `
+                        <li class="list-group-item text-left">
+                            Zero result! The request did not encounter any errors, but returned no result
+                        </li>
+                    `;
                 }
-            })
+            });
+    });
+    document.getElementById("resultGeocode").innerHTML = "";
+    document.getElementById("submitGeocode").addEventListener("click", () => {
+        let address = document.getElementById("address").value;
+        if (address === "") {
+            alert("Please enter an address");
+        }
+
+        let urlGeocode = `http://localhost:8080/api/v0/geocodes/getGeocode?address=${address}`;
+        fetch(urlGeocode)
+            .then(response => response.json())
+            .then(data => {
+                if (data.results.length > 0) {
+                    data.results.forEach(result => {
+                        document.getElementById("resultGeocode").innerHTML += `
+                        <li class="list-group-item text-left">
+                            <i class="fas fa-map-marker-alt"></i>
+                            ${result.formattedAddress}
+                            <br/>
+                            Location : ${result.geometry.location.lat}, ${result.geometry.location.lng}
+                            <br/>
+                            Types: [${result.types}]
+                        </li>
+                    `;
+                    });
+                }
+            });
     });
 </script>
 </body>

@@ -35,4 +35,12 @@ public class GeocodeServiceImpl implements GeocodeService {
         geocodeResultEntity.setResults(modelMapper.map(reverseGeocode.getResults(), List.class));
         return geocodeResultEntity;
     }
+
+    @Override
+    public GeocodeResultEntity getGeocode(String address) throws InterruptedException, ApiException, IOException {
+        GeocodeResultEntity geocodeResultEntity = new GeocodeResultEntity();
+        GeocodeResultDto geocodeResultDto = geocodeExternalService.getGeocode(address);
+        geocodeResultEntity.setResults(modelMapper.map(geocodeResultDto.getResults(), List.class));
+        return geocodeResultEntity;
+    }
 }
