@@ -18,16 +18,10 @@ import java.util.List;
 public class GeocodeExternalServiceImpl implements GeocodeExternalService {
 
     private final GeoApiContext geoApiContext;
-    private ModelMapper modelMapper;
 
     @Autowired
     public GeocodeExternalServiceImpl(GeoApiContext geoApiContext) {
         this.geoApiContext = geoApiContext;
-    }
-
-    @Autowired
-    public void setModelMapper(ModelMapper modelMapper) {
-        this.modelMapper = modelMapper;
     }
 
     @Override
@@ -41,6 +35,8 @@ public class GeocodeExternalServiceImpl implements GeocodeExternalService {
 
         List<GeocodingResult> geocodingResults = List.of(await);
 
+        ModelMapper modelMapper = new ModelMapper();
+
         GeocodeResultDto geocodeResultDto = new GeocodeResultDto();
         geocodeResultDto.setResults(modelMapper.map(geocodingResults, List.class));
 
@@ -52,6 +48,8 @@ public class GeocodeExternalServiceImpl implements GeocodeExternalService {
         final GeocodingResult[] await = GeocodingApi.newRequest(geoApiContext).address(address).await();
 
         List<GeocodingResult> geocodingResults = List.of(await);
+
+        ModelMapper modelMapper = new ModelMapper();
 
         GeocodeResultDto geocodeResultDto = new GeocodeResultDto();
         geocodeResultDto.setResults(modelMapper.map(geocodingResults, List.class));

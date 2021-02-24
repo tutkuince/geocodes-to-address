@@ -16,22 +16,17 @@ import java.util.List;
 public class GeocodeServiceImpl implements GeocodeService {
 
     private final GeocodeExternalService geocodeExternalService;
-    private ModelMapper modelMapper;
 
     @Autowired
     public GeocodeServiceImpl(GeocodeExternalService geocodeExternalService) {
         this.geocodeExternalService = geocodeExternalService;
     }
 
-    @Autowired
-    public void setModelMapper(ModelMapper modelMapper) {
-        this.modelMapper = modelMapper;
-    }
-
     @Override
     public GeocodeResultEntity getReverseGeocode(String latitudeAndLongitude) throws InterruptedException, ApiException, IOException {
         GeocodeResultEntity geocodeResultEntity = new GeocodeResultEntity();
         GeocodeResultDto reverseGeocode = geocodeExternalService.getReverseGeocode(latitudeAndLongitude);
+        ModelMapper modelMapper = new ModelMapper();
         geocodeResultEntity.setResults(modelMapper.map(reverseGeocode.getResults(), List.class));
         return geocodeResultEntity;
     }
@@ -40,6 +35,7 @@ public class GeocodeServiceImpl implements GeocodeService {
     public GeocodeResultEntity getGeocode(String address) throws InterruptedException, ApiException, IOException {
         GeocodeResultEntity geocodeResultEntity = new GeocodeResultEntity();
         GeocodeResultDto geocodeResultDto = geocodeExternalService.getGeocode(address);
+        ModelMapper modelMapper = new ModelMapper();
         geocodeResultEntity.setResults(modelMapper.map(geocodeResultDto.getResults(), List.class));
         return geocodeResultEntity;
     }
