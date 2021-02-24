@@ -90,10 +90,18 @@
                         </li>
                     `;
                 }
-            });
+            }).catch(reason => {
+            document.getElementById("resultReverseGeocode").innerHTML +=
+                `
+                        <li class="list-group-item text-left">
+                            Invalid Request
+                        </li>
+                    `;
+        });
     });
-    document.getElementById("resultGeocode").innerHTML = "";
+
     document.getElementById("submitGeocode").addEventListener("click", () => {
+        document.getElementById("resultGeocode").innerHTML = "";
         let address = document.getElementById("address").value;
         if (address === "") {
             alert("Please enter an address");
@@ -103,6 +111,7 @@
         fetch(urlGeocode)
             .then(response => response.json())
             .then(data => {
+                console.log(data);
                 if (data.results.length > 0) {
                     data.results.forEach(result => {
                         document.getElementById("resultGeocode").innerHTML += `
@@ -116,8 +125,20 @@
                         </li>
                     `;
                     });
+                } else {
+                    document.getElementById("resultGeocode").innerHTML += `
+                        <li class="list-group-item text-left">
+                            Zero result! The request did not encounter any errors, but returned no result
+                        </li>
+                    `;
                 }
-            });
+            }).catch(reason => {
+            document.getElementById("resultReverseGeocode").innerHTML +=
+                `
+                        <li class="list-group-item text-left">
+                            Invalid Request
+                        </li>
+                    `;});
     });
 </script>
 </body>
