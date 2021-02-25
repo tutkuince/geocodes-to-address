@@ -65,7 +65,7 @@
         let latlngArray = latlng.split(",");
         let lat = latlngArray[0];
         let lng = latlngArray[1];
-        let urlReverseGeocode = `http://localhost:8080/api/v0/geocodes/getReverseGeocode?lat=${lat}&lng=${lng}`;
+        let urlReverseGeocode = `${window.location.href}/api/v0/geocodes/getReverseGeocode?lat=${lat}&lng=${lng}`;
         fetch(urlReverseGeocode)
             .then(response => response.json())
             .then(data => {
@@ -107,7 +107,7 @@
             alert("Please enter an address");
         }
 
-        let urlGeocode = `http://localhost:8080/api/v0/geocodes/getGeocode?address=${address}`;
+        let urlGeocode = `${window.location.href}/api/v0/geocodes/getGeocode?address=${address}`;
         fetch(urlGeocode)
             .then(response => response.json())
             .then(data => {
